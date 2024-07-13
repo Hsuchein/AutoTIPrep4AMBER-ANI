@@ -320,10 +320,13 @@ def find_and_sort_in_files():
 
     return k6_in_files, other_in_files
 
-def generate_slurm_script(template_path, directory, wat_top, gas_prm):
+def generate_slurm_script(template_path, directory, wat_top, gas_top):
     # 读取模板文件内容
     with open(template_path, 'r') as file:
         template = file.read()
+
+    wat_template = template.replace('--job-name=xujian', f'--job-name=wat_{wat_top.split(".")[0]}')
+    gas_template = template.replace('--job-name=xujian', f'--job-name=gas_{gas_top.split(".")[0]}')
 
     ANI_enegies = '/ix1/jwang/tan77/xujian/software/amber22/bin/sander.MPI'
     cMD_enegies = '/ix1/jwang/tan77/xujian/software/amber22_ori/amber22/bin/sander.MPI'
@@ -406,8 +409,8 @@ def generate_slurm_script(template_path, directory, wat_top, gas_prm):
     ]
 
     # 将新内容附加到模板文件的末尾
-    script_content_wat = template + '\n' + '\n'.join(commands_wat)
-    script_content_gas = template + '\n' + '\n'.join(commands_gas)
+    script_content_wat = wat_template + '\n' + '\n'.join(commands_wat)
+    script_content_gas = gas_template + '\n' + '\n'.join(commands_gas)
 
 
     # 将结果写入新的sub.sh文件

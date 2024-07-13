@@ -3,11 +3,11 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=6  ## 1 for gpu job; <=24 for cpu job.
 #SBATCH --cluster=gpu        ## gpu, smp
-#SBATCH --partition=gtx1080  ## gtx1080, v100, a100, a100_nvlink
+##SBATCH --partition=gtx1080  ## gtx1080, v100, a100, a100_nvlink
 ##SBATCH --partition=v100     ## gtx1080, v100, a100, a100_nvlink
-##SBATCH --partition=a100     ## gtx1080, v100, a100, a100_nvlink
+#SBATCH --partition=a100     ## gtx1080, v100, a100, a100_nvlink
 ##SBATCH --partition=a100_nvlink  ## gtx1080, v100, a100, a100_nvlink
-#SBATCH --time=5-23:59:00    ## 1-00:00:00
+#SBATCH --time=5-23:59:59    ## 1-00:00:00
 #SBATCH --qos=long          ##long (3~6days), normal (1-3days), short (<1day)
 ##SBATCH --time=1-00:09:00    ## 1-00:00:00
 ##SBATCH --qos=normal         ##long (3~6days), normal (1-3days), short (<1day)
