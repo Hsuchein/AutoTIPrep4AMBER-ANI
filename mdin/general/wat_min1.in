@@ -1,0 +1,25 @@
+Minimization Step 2
+ &cntrl
+   igb = 0, ntb = 2, ntpr = 25, ntwx = 100, ntp = 1,
+
+   cut = 9.0, ntc= 2, ntf= 2,
+
+   imin = 1, maxcyc = 1000, ntmin = 1, drms = 0.01,
+
+   ibelly = 1, ntr = 0, ncyc = 500,
+
+ /      
+Belly RES Set 1
+FIND
+*  *  E *
+SEARCH
+RES  1  1 
+END
+all water
+FIND
+*  *  * WAT
+SEARCH
+RES  1 10000
+END
+END
+

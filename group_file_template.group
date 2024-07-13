@@ -1,0 +1,2 @@
+-O -i ../mdin/{mdin_FILE} -p {prm_FILE1} -c {CRD_FILE} -o {out_FILE1} -inf {info_FILE1} -x {trj_FILE1} -r {rst_FILE1}
+-O -i ../mdin/{mdin_FILE} -p {prm_FILE2} -c {CRD_FILE} -o {out_FILE2} -inf {info_FILE2} -x {trj_FILE2} -r {rst_FILE2}

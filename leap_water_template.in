@@ -1,0 +1,11 @@
+source leaprc.gaff2
+source leaprc.water.tip3p
+
+loadamberparams {frcmod_FILE}
+lig = loadmol2 {mol2_FILE}
+check lig
+
+solvatebox lig TIP3PBOX 10.0
+saveamberparm lig {prmtop_FILE} {inpcrd_FILE}
+quit
+

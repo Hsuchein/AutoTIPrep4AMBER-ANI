@@ -1,0 +1,17 @@
+ step one in gas phase 
+ &cntrl
+   nstlim =1250000, nscm=500,
+   ntx=1, irest=0, ntpr=1000, ntave=5000,
+   tempi=298.15, temp0=298.15, ntt=3,  gamma_ln=5.0,
+   ntb=2, igb=0, cut=9.0,
+   ntp=1, taup=1,
+   dt=0.001, 
+   ntc=2, ntf=2, 
+   ntwr = 5000, ntwx=50000, 
+   icfe=1, clambda=0.80669,  klambda=6,
+   ifani=1,
+ /
+&ani
+   animask=':1'
+/
+

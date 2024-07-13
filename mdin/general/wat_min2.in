@@ -1,0 +1,12 @@
+Minimization Step 2
+ &cntrl
+   igb = 0, ntb = 2, ntpr = 25, ntwx = 100, ntp = 1,
+
+   cut = 9.0, ntc= 2, ntf= 2,
+
+   imin = 1, maxcyc = 1000, ntmin = 1, drms = 0.01,
+
+   ibelly = 0, ntr = 0,
+
+ /   
+

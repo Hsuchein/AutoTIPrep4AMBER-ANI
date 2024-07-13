@@ -1,0 +1,9 @@
+source leaprc.gaff2
+
+loadamberparams {frcmod_FILE}
+lig = loadmol2 {mol2_FILE}
+check lig
+
+saveamberparm lig {prmtop_FILE} {inpcrd_FILE}
+quit
+
