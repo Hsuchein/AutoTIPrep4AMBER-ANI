@@ -42,15 +42,13 @@ def check_files(directory, mol2files, frcmodfiles):
             os.remove(file_path)
 
     # 定义所需文件的扩展名及其对应的变量
-    required_files = {'.mol2': mol2files, '.frcmod': frcmodfiles}
+    required_files = {'.mol2': [], '.frcmod': []}
     
     # 获取目录下所有文件
     files = os.listdir(directory)
     
     # 检查每个所需扩展名的文件是否存在
     for extension, file_list in required_files.items():
-        # 清空之前的文件列表
-        file_list.clear()
         # 添加当前扩展名的所有文件到对应列表
         for file in files:
             if file.endswith(extension):
@@ -59,6 +57,10 @@ def check_files(directory, mol2files, frcmodfiles):
         # 如果对应扩展名的文件列表为空，则发出警告
         if not file_list:
             warnings.warn(f"No file with {extension} extension found in {directory}")
+    
+    # 更新外部列表
+    mol2files.extend(required_files['.mol2'])
+    frcmodfiles.extend(required_files['.frcmod'])
 
 def generate_decharge_mol2(directory, mol2name, mol2_dechg_files ,atomnumlist):
     # 定义开始和结束标记
