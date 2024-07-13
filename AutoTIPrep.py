@@ -325,8 +325,8 @@ def generate_slurm_script(template_path, directory, wat_top, gas_top):
     with open(template_path, 'r') as file:
         template = file.read()
 
-    wat_template = template.replace('--job-name=xujian', f'--job-name=wat_{wat_top.split(".")[0]}')
-    gas_template = template.replace('--job-name=xujian', f'--job-name=gas_{gas_top.split(".")[0]}')
+    wat_template = template.replace('--job-name=xujian', f'--job-name=wat_{wat_top.split("_")[0]}')
+    gas_template = template.replace('--job-name=xujian', f'--job-name=gas_{gas_top.split("_")[0]}')
 
     ANI_enegies = '/ix1/jwang/tan77/xujian/software/amber22/bin/sander.MPI'
     cMD_enegies = '/ix1/jwang/tan77/xujian/software/amber22_ori/amber22/bin/sander.MPI'
