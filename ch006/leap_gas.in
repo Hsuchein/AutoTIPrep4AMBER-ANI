@@ -1,0 +1,9 @@
+source leaprc.gaff2
+
+loadamberparams ch006.frcmod
+lig = loadmol2 ch006_gaff2.mol2
+check lig
+
+saveamberparm lig ch006_gaff2_gas.prmtop crd.inpcrd
+quit
+

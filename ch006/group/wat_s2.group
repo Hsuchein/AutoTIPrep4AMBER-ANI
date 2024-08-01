@@ -1,0 +1,2 @@
+-O -i ../mdin/wat_md2_k6.in -p ch006_gaff2_wat.prmtop -c rst_wat1.rst -o output_wat2.out -inf info_wat2.out -x trj_wat2.nc -r rst_wat2.rst
+-O -i ../mdin/wat_md2_k6.in -p ch006_gaff2_wat_devdw.prmtop -c rst_wat1.rst -o output_de_wat2.out -inf info_de_wat2.out -x trj_de_wat2.nc -r rst_de_wat2.rst

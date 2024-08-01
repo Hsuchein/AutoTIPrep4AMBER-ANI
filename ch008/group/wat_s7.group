@@ -1,0 +1,2 @@
+-O -i ../mdin/wat_md7_k6.in -p ch008_gaff2_wat.prmtop -c rst_wat6.rst -o output_wat7.out -inf info_wat7.out -x trj_wat7.nc -r rst_wat7.rst
+-O -i ../mdin/wat_md7_k6.in -p ch008_gaff2_wat_devdw.prmtop -c rst_wat6.rst -o output_de_wat7.out -inf info_de_wat7.out -x trj_de_wat7.nc -r rst_de_wat7.rst

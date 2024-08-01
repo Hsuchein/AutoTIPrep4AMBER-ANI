@@ -8,10 +8,9 @@
    dt=0.001, 
    ntc=2, ntf=2, 
    ntwr = 5000, ntwx=50000, 
-   icfe=1, clambda=0.98408,  klambda=6,
+   icfe=1, clambda=0.98408,
    ifani=1,
  /
 &ani
    animask=':1'
 /
-

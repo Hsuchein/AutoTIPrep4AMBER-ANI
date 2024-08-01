@@ -1,11 +1,18 @@
 source leaprc.gaff2
 source leaprc.water.tip3p
+loadamberprep solvent.prepi
+loadamberparams solvent.frcmod
+
 
 loadamberparams {frcmod_FILE}
 lig = loadmol2 {mol2_FILE}
 check lig
+solvent = loadPdb solvent_bulk.pdb
+mol = combine {mol solvent}
+charge mol
+check mol
 
-solvatebox lig TIP3PBOX 10.0
-saveamberparm lig {prmtop_FILE} {inpcrd_FILE}
+set mol box { 35.900, 35.900, 35.900 }
+saveamberparm mol {prmtop_FILE} {inpcrd_FILE}
 quit
 

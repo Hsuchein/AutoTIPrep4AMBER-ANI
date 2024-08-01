@@ -1,0 +1,18 @@
+source leaprc.gaff2
+source leaprc.water.tip3p
+loadamberprep solvent.prepi
+loadamberparams solvent.frcmod
+
+
+loadamberparams ch006.frcmod
+lig = loadmol2 ch006_gaff2.mol2
+check lig
+solvent = loadPdb solvent_bulk.pdb
+mol = combine {mol solvent}
+charge mol
+check mol
+
+set mol box { 35.900, 35.900, 35.900 }
+saveamberparm mol ch006_gaff2_dechg_wat.prmtop crd.inpcrd
+quit
+

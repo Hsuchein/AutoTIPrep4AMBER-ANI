@@ -1,0 +1,2 @@
+-O -i ../mdin/gas_md5_k6.in -p ch008_gaff2_gas.prmtop -c rst_gas4.rst -o output_gas5.out -inf info_gas5.out -x trj_gas5.nc -r rst_gas5.rst
+-O -i ../mdin/gas_md5_k6.in -p ch008_gaff2_gas_devdw.prmtop -c rst_gas4.rst -o output_de_gas5.out -inf info_de_gas5.out -x trj_de_gas5.nc -r rst_de_gas5.rst

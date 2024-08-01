@@ -1,6 +1,7 @@
 import os
 import warnings
 import subprocess
+import shutil
 
 def check_environment():
     # 定义要检查的命令
@@ -31,7 +32,7 @@ def check_environment():
 
 def find_directories():
     script_dir = os.path.dirname(os.path.abspath(__file__))  # 获取当前脚本的绝对路径
-    directories = [os.path.join(script_dir, d) for d in os.listdir(script_dir) if os.path.isdir(os.path.join(script_dir, d)) and d != 'mdin']
+    directories = [os.path.join(script_dir, d) for d in os.listdir(script_dir) if os.path.isdir(os.path.join(script_dir, d)) and not d.startswith('.') and d != 'mdin']
     return directories
 
 def check_files(directory, mol2files, frcmodfiles):
@@ -43,10 +44,10 @@ def check_files(directory, mol2files, frcmodfiles):
 
     # 定义所需文件的扩展名及其对应的变量
     required_files = {'.mol2': [], '.frcmod': []}
-    
+
     # 获取目录下所有文件
     files = os.listdir(directory)
-    
+
     # 检查每个所需扩展名的文件是否存在
     for extension, file_list in required_files.items():
         # 添加当前扩展名的所有文件到对应列表
@@ -57,10 +58,12 @@ def check_files(directory, mol2files, frcmodfiles):
         # 如果对应扩展名的文件列表为空，则发出警告
         if not file_list:
             warnings.warn(f"No file with {extension} extension found in {directory}")
-    
+
     # 更新外部列表
     mol2files.extend(required_files['.mol2'])
-    frcmodfiles.extend(required_files['.frcmod'])
+
+    # 更新frcmodfiles列表，排除solvent.frcmod文件
+    frcmodfiles.extend([f for f in required_files['.frcmod'] if f != 'solvent.frcmod'])
 
 def generate_decharge_mol2(directory, mol2name, mol2_dechg_files ,atomnumlist):
     # 定义开始和结束标记
@@ -182,10 +185,18 @@ def generate_tleap():
         with open(gas_dechg_output_path, 'w') as file:
             file.write(template)
         
-
 def tleap_build():
     for directory in directories:
-        os.chdir(directory)  # Change to the target directory
+        parent_directory = os.path.dirname(directory)  # Find the parent directory
+        # List all files in the parent directory
+        files_in_parent = [f for f in os.listdir(parent_directory) if os.path.isfile(os.path.join(parent_directory, f))]
+        # Filter and copy .frcmod, .prepi, .pdb files to the target directory
+        for file in files_in_parent:
+            if file.endswith(('.frcmod', '.prepi', '.pdb')):
+                shutil.copy(os.path.join(parent_directory, file), directory)
+        # Change to the target directory and run the commands
+        os.chdir(directory)
+        print(f"Building system in {directory}...")
         subprocess.run(['tleap', '-f', 'leap_water.in'], check=True, capture_output=True, text=True)
         subprocess.run(['tleap', '-f', 'leap_gas.in'], check=True, capture_output=True, text=True)
         subprocess.run(['tleap', '-f', 'leap_water_dechg.in'], check=True, capture_output=True, text=True)
@@ -206,12 +217,13 @@ def generate_parmed():
         prm_wat_devdw.append(mol2name.split('.')[0] + '_wat_devdw.prmtop')
         template = template.replace('{devdw_FILE}', mol2name.split('.')[0] + '_wat_devdw.prmtop')
 
+        # 数目要和solvent的原子数目一致
+        solvent_atom = 27 # octanol
         parmed_command = []
         for i in range(1, int(atomnums) + 1):
-            parmed_command.append(f'changeLJPair @{i} @{int(atomnums)+1} 0.0 0.0')
-            parmed_command.append(f'changeLJPair @{i} @{int(atomnums)+2} 0.0 0.0')
-            parmed_command.append(f'changeLJPair @{i} @{int(atomnums)+3} 0.0 0.0')
-            parmed_command.append(f'changeLJPair @{i} @{int(atomnums)+4} 0.0 0.0')        
+            for j in range(1, int(solvent_atom) + 1):
+                parmed_command.append(f'changeLJPair @{i} @{int(atomnums)+j} 0.0 0.0')
+  
 
 
         complete_command = '\n'.join(parmed_command) + '\n' + template
@@ -347,31 +359,31 @@ def generate_slurm_script(template_path, directory, wat_top, gas_top):
         f"mpirun -np 16 {ANI_enegies} -O -i ../mdin/general/wat_md_2.in -p {wat_top} -c wat_md1.rst  -o output_wat_md2.out  -r md_final_wat.rst",
         "sleep 2",
         "echo \"Water Simulation 1\"",
-        f"mpirun -np 16 {ANI_enegies}  -ng 2 -groupfile ./group/wat_s1.group",
+        f"mpirun -np 16 {ANI_enegies}  -ng 16 -groupfile ./group/wat_s1.group",
         "sleep 2",
         "echo \"Water Simulation 2\"",
-        f"mpirun -np 16 {ANI_enegies}  -ng 2 -groupfile ./group/wat_s2.group",
+        f"mpirun -np 16 {ANI_enegies}  -ng 16 -groupfile ./group/wat_s2.group",
         "sleep 2",
         "echo \"Water Simulation 3\"",
-        f"mpirun -np 16 {ANI_enegies}  -ng 2 -groupfile ./group/wat_s3.group",
+        f"mpirun -np 16 {ANI_enegies}  -ng 16 -groupfile ./group/wat_s3.group",
         "sleep 2",
         "echo \"Water Simulation 4\"",
-        f"mpirun -np 16 {ANI_enegies}  -ng 2 -groupfile ./group/wat_s4.group",
+        f"mpirun -np 16 {ANI_enegies}  -ng 16 -groupfile ./group/wat_s4.group",
         "sleep 2",
         "echo \"Water Simulation 5\"",
-        f"mpirun -np 16 {ANI_enegies}  -ng 2 -groupfile ./group/wat_s5.group",
+        f"mpirun -np 16 {ANI_enegies}  -ng 16 -groupfile ./group/wat_s5.group",
         "sleep 2",
         "echo \"Water Simulation 6\"",
-        f"mpirun -np 16 {ANI_enegies}  -ng 2 -groupfile ./group/wat_s6.group",
+        f"mpirun -np 16 {ANI_enegies}  -ng 16 -groupfile ./group/wat_s6.group",
         "sleep 2",
         "echo \"Water Simulation 7\"",
-        f"mpirun -np 16 {ANI_enegies}  -ng 2 -groupfile ./group/wat_s7.group",
+        f"mpirun -np 16 {ANI_enegies}  -ng 16 -groupfile ./group/wat_s7.group",
         "sleep 2",
         "echo \"Water Simulation 8\"",
-        f"mpirun -np 16 {ANI_enegies}  -ng 2 -groupfile ./group/wat_s8.group",
+        f"mpirun -np 16 {ANI_enegies}  -ng 16 -groupfile ./group/wat_s8.group",
         "sleep 2",
         "echo \"Water Simulation 9\"",
-        f"mpirun -np 16 {ANI_enegies}  -ng 2 -groupfile ./group/wat_s9.group",
+        f"mpirun -np 16 {ANI_enegies}  -ng 16 -groupfile ./group/wat_s9.group",
         "sleep 2",
     ]
 
@@ -448,6 +460,7 @@ if __name__ == '__main__':
     frcmodfiles = []
     for directory in directories:
         check_files(directory, mol2files, frcmodfiles)
+    print(frcmodfiles)
 
     # Step 4: Generate decharged mol2 files
     print("Generating decharged mol2 files...")
