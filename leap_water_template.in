@@ -8,7 +8,7 @@ loadamberparams {frcmod_FILE}
 lig = loadmol2 {mol2_FILE}
 check lig
 solvent = loadPdb solvent_bulk.pdb
-mol = combine {mol solvent}
+mol = combine {lig solvent}
 charge mol
 check mol
 
